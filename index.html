@@ -15,26 +15,26 @@
             box-sizing: border-box;
         }
 
-        body {
+        html, body {
             font-family: 'Roboto', sans-serif;
             background-color: #f0f4f8;
-            display: grid;
-            place-items: center;
-            min-height: 100vh;
             color: #333;
+            /* Garante que o body ocupe a tela */
+            height: 100%;
+            width: 100%;
+            overflow: hidden; /* Evita rolagem do body */
         }
 
-        /* Container Principal da Apresentação */
+        /* Container Principal da Apresentação
+           (Modificado para ser tela cheia) */
         .presentation-container {
-            width: 90%;
-            max-width: 1100px;
-            aspect-ratio: 16 / 9;
+            width: 100%;
+            /* 100dvh (dynamic viewport height) é melhor para mobile, com fallback */
+            height: 100dvh;
+            height: 100%; 
             background: #fff;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
             position: relative;
             overflow: hidden;
-            border: 1px solid #ddd;
         }
 
         /* Viewport (Onde os slides aparecem) */
@@ -44,16 +44,21 @@
             position: relative;
         }
 
-        /* Estilo Base do Slide */
+        /* Estilo Base do Slide
+           (Modificado para ser rolável) */
         .slide {
             width: 100%;
             height: 100%;
-            padding: 40px 60px;
+            /* Padding ajustado para mobile, com espaço embaixo para nav */
+            padding: 30px 25px 90px 25px; 
             position: absolute;
             opacity: 0;
             transform: scale(0.95);
             transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
             visibility: hidden;
+            /* ESSENCIAL: Permite rolar o conteúdo do slide */
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch; /* Rolagem suave no iOS */
         }
 
         /* Slide Ativo (Visível) */
@@ -72,18 +77,18 @@
         }
         
         .slide h1 {
-            font-size: 2.8rem;
+            font-size: 2.2rem; /* Ajustado para mobile */
             text-align: center;
             border: none;
             color: #004066;
         }
         
         .slide h2 {
-            font-size: 2rem;
+            font-size: 1.7rem; /* Ajustado para mobile */
         }
         
         .slide h3 {
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: #007bff;
             margin-top: 20px;
             margin-bottom: 10px;
@@ -91,12 +96,12 @@
 
         /* Conteúdo de Texto */
         .slide p, .slide li {
-            font-size: 1.15rem;
+            font-size: 1rem; /* Ajustado para mobile */
             line-height: 1.6;
             margin-bottom: 12px;
         }
         
-        .slide ul {
+        .slide ul, .slide ol {
             padding-left: 25px;
         }
 
@@ -106,21 +111,22 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            text-align: center;
             background: linear-gradient(135deg, #005a8d 0%, #007bff 100%);
             color: #fff;
         }
         .slide.title-slide h1 {
+            font-size: 2.5rem; /* Ajustado para mobile */
             color: #fff;
-            font-size: 3.5rem;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
         }
         .slide.title-slide .subtitle {
-            font-size: 1.8rem;
+            font-size: 1.5rem; /* Ajustado para mobile */
             font-weight: 300;
             margin-bottom: 30px;
         }
         .slide.title-slide .authors {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 400;
         }
 
@@ -134,10 +140,13 @@
             background-color: #f8f9fa;
         }
 
-        /* Layout Comparativo (2 colunas) */
+        /* Layout Comparativo (2 colunas)
+           (Agora empilha no mobile) */
         .comparison-layout {
             display: flex;
-            gap: 30px;
+            /* Empilha colunas em telas pequenas */
+            flex-direction: column; 
+            gap: 20px;
             width: 100%;
         }
         .comparison-layout .column {
@@ -152,29 +161,25 @@
             font-size: 1rem;
         }
 
-        /* Slide 7: Interatividade (Toggle JS) */
+        /* Slide 7: Interatividade (Toggle JS)
+           (Agora empilha no mobile) */
         .toggle-container {
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* Empilha botões */
+            gap: 8px;
+            align-items: stretch; /* Botões full-width */
             margin-bottom: 25px;
         }
         .toggle-btn {
-            padding: 12px 25px;
-            font-size: 1.2rem;
+            padding: 12px 20px;
+            font-size: 1.1rem;
             font-weight: 700;
             border: none;
             background-color: #eee;
             color: #555;
             cursor: pointer;
             transition: all 0.3s ease;
-        }
-        .toggle-btn:first-child {
-            border-top-left-radius: 8px;
-            border-bottom-left-radius: 8px;
-        }
-        .toggle-btn:last-child {
-            border-top-right-radius: 8px;
-            border-bottom-right-radius: 8px;
+            border-radius: 8px !important; /* Bordas arredondadas */
         }
         .toggle-btn.active {
             background-color: #007bff;
@@ -190,27 +195,31 @@
         /* Referências (Slide 13) */
         .references {
             font-family: 'Courier New', Courier, monospace;
-            font-size: 0.8rem;
+            font-size: 0.75rem; /* Menor para caber */
             line-height: 1.5;
             background: #fdfdfd;
             padding: 15px;
             border-radius: 5px;
             border: 1px solid #eee;
-            overflow-y: auto;
-            max-height: 400px;
+            overflow-x: auto; /* Permite rolar referências longas */
+            word-wrap: break-word;
         }
 
-        /* Controles de Navegação */
+        /* Controles de Navegação (Fixo no rodapé) */
         .nav-controls {
             position: absolute;
-            bottom: 20px;
-            right: 20px;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
             display: flex;
+            justify-content: space-between;
             gap: 10px;
+            z-index: 100;
         }
         .nav-btn {
-            padding: 10px 18px;
-            font-size: 1.1rem;
+            padding: 12px 15px;
+            font-size: 1rem;
             font-weight: 700;
             background-color: #005a8d;
             color: white;
@@ -218,6 +227,7 @@
             border-radius: 5px;
             cursor: pointer;
             transition: background-color 0.3s ease, transform 0.2s ease;
+            flex-grow: 1; /* Ocupa espaço disponível */
         }
         .nav-btn:hover {
             background-color: #004066;
@@ -229,14 +239,15 @@
             transform: none;
         }
 
-        /* Barra de Progresso */
+        /* Barra de Progresso (Fixa no rodapé) */
         .progress-bar-container {
             position: absolute;
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 6px;
+            height: 8px; /* Mais grossa */
             background-color: #ddd;
+            z-index: 99;
         }
         .progress-bar {
             height: 100%;
@@ -245,16 +256,124 @@
             transition: width 0.4s ease;
         }
 
-        /* Contador de Slides */
+        /* Contador de Slides (Fixo acima dos botões) */
         .slide-counter {
             position: absolute;
-            bottom: 18px;
-            left: 20px;
-            font-size: 1rem;
-            color: #777;
+            bottom: 70px; /* Acima dos botões */
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9rem;
+            color: #555;
             font-weight: 700;
+            z-index: 100;
         }
 
+        /* --- MEDIA QUERY PARA DESKTOP --- */
+        /* Estilos que se aplicam apenas em telas maiores (ex: tablets e desktops) */
+        @media (min-width: 769px) {
+            body {
+                /* Centraliza a apresentação no desktop */
+                display: grid;
+                place-items: center;
+                min-height: 100vh;
+                background-color: #f0f4f8;
+            }
+
+            .presentation-container {
+                /* Retorna ao formato 16:9 de slide */
+                width: 90%;
+                max-width: 1100px;
+                aspect-ratio: 16 / 9;
+                height: auto; /* Altura automática baseada no aspect-ratio */
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                border: 1px solid #ddd;
+            }
+
+            .slide {
+                /* Retorna ao padding de desktop, sem rolagem */
+                padding: 40px 60px;
+                overflow-y: hidden;
+            }
+
+            .slide h1 { font-size: 2.8rem; }
+            .slide.title-slide h1 { font-size: 3.5rem; }
+            .slide.title-slide .subtitle { font-size: 1.8rem; }
+            .slide h2 { font-size: 2rem; }
+            .slide h3 { font-size: 1.4rem; }
+            .slide p, .slide li { font-size: 1.15rem; }
+            .slide.title-slide .authors { font-size: 1.2rem; }
+
+            .comparison-layout {
+                /* Duas colunas lado a lado */
+                flex-direction: row;
+                gap: 30px;
+            }
+            .comparison-layout .column li {
+                font-size: 1rem;
+            }
+
+            .toggle-container {
+                /* Botões lado a lado */
+                flex-direction: row;
+                justify-content: center;
+                gap: 0; /* Remove gap para juntar os botões */
+            }
+            .toggle-btn {
+                padding: 12px 25px;
+                font-size: 1.2rem;
+                flex-grow: 0; /* Tamanho automático */
+            }
+            .toggle-btn:first-child {
+                border-top-left-radius: 8px !important;
+                border-bottom-left-radius: 8px !important;
+                border-top-right-radius: 0 !important;
+                border-bottom-right-radius: 0 !important;
+            }
+            .toggle-btn:last-child {
+                border-top-right-radius: 8px !important;
+                border-bottom-right-radius: 8px !important;
+                border-top-left-radius: 0 !important;
+                border-bottom-left-radius: 0 !important;
+            }
+
+            .nav-controls {
+                /* Volta para o canto inferior direito */
+                position: absolute;
+                bottom: 20px;
+                right: 20px;
+                left: auto;
+                transform: none;
+                width: auto;
+                display: flex;
+                gap: 10px;
+            }
+            .nav-btn {
+                font-size: 1.1rem;
+                padding: 10px 18px;
+                flex-grow: 0;
+            }
+
+            .slide-counter {
+                /* Volta para o canto inferior esquerdo */
+                bottom: 25px;
+                left: 25px;
+                transform: none;
+                font-size: 1rem;
+                color: #777;
+            }
+
+            .progress-bar-container {
+                height: 6px; /* Mais fina no desktop */
+            }
+            
+            .references {
+                font-size: 0.8rem;
+                max-height: 400px;
+                overflow-y: auto;
+            }
+        }
+        
     </style>
 </head>
 <body>
@@ -334,7 +453,7 @@
 
             <section class="slide">
                 <h2>4. Ciclo Biológico (Vetor e Homem)</h2>
-                <p style="font-weight: 700; color: #d9534f; font-size: 1.3rem;">Ponto-chave: Nenhuma das duas utiliza um "Vetor" (como um mosquito). O ser humano é o principal reservatório.</p>
+                <p style="font-weight: 700; color: #d9534f; font-size: 1.1rem;">Ponto-chave: Nenhuma das duas utiliza um "Vetor" (como um mosquito). O ser humano é o principal reservatório.</p>
                 
                 <h3>Hanseníase</h3>
                 <ul>
@@ -535,13 +654,13 @@
                     <br>
                     <p>BRASIL. Ministério da Saúde. <strong>Boletim Epidemiológico de Hanseníase</strong>. Brasília, v. 54, n. especial, jan. 2024.</p>
                     <br>
-                    <p>FIOCRUZ. <strong>Hanseníase</strong>. Disponível em: &lt;https://portal.fiocruz.br/doenca/hanseniase&gt;. Acesso em: 06 nov. 2025.</p>
+                    <p>FIOCRUZ. <strong>Hanseníase</strong>. Disponível em: &lt;https://portal.fiocrruz.br/doenca/hanseniase&gt;. Acesso em: 06 nov. 2025.</p>
                 </div>
             </section>
             
             <section class="slide end-slide">
-                <h1 style="color: #005a8d; font-size: 4rem;">Obrigado!</h1>
-                <p class="subtitle" style="color: #333;">Grupo 3</p>
+                <h1 style="color: #005a8d; font-size: 3rem;">Obrigado!</h1>
+                <p class="subtitle" style="color: #333; font-size: 1.5rem;">Grupo 3</p>
                 <h2>Dúvidas?</h2>
             </section>
 
@@ -587,6 +706,8 @@
                 if (slides[index]) {
                     slides[index].classList.add('active');
                     currentSlide = index;
+                    // Ao trocar de slide, rola o novo slide para o topo
+                    slides[index].scrollTop = 0;
                 }
 
                 updateControls();
